@@ -83,12 +83,18 @@ router.delete('/:id', (req, res) => {
     });
 });
 
-db('posts as p')
-  .join('users as u', 'u.id', 'm', 'p.user_id')
-  .where({ user_id: id })
-  .then(posts => {
-    res.status(200).json(posts);
-  })
-  .catch(error => res.send(error));
+router.get('/:id/posts', (req, res) => {
+  const { id } = req.params;
+
+  db('posts as p')
+    .join('users as u', 'u.id', '=', 'p.user_id')
+    .where('u.id', id)
+    .then(posts => {
+      res.status(200).json(posts);
+    })
+    .catch(error => res.send(error));
+});
+
+// this db has a posts table and each record has a user_id
 
 module.exports = router;
